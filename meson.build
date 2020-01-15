@@ -310,8 +310,7 @@ message('fontconfig has FcWeightFromOpenTypeDouble: ' + res)
 
 # The first version of freetype with a pkg-config file is 2.1.5
 # We require both fontconfig and freetype if we are to have either.
-freetype_dep = dependency('freetype2', required: false,
-                          fallback: ['freetype2', 'freetype_dep'])
+freetype_dep = dependency('freetype2', required: false)
 
 if freetype_dep.found()
   freetype2_pc = 'freetype2'
@@ -326,6 +325,11 @@ else
       endif
     endforeach
   endif
+endif
+
+if fontconfig_required and not freetype_dep.found()
+  freetype_dep = dependency('freetype2', required: false,
+                            fallback: ['freetype2', 'freetype_dep'])
 endif
 
 # To build pangoft2, we need HarfBuzz, FontConfig and FreeType
